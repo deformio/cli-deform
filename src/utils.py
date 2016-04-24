@@ -13,15 +13,30 @@ from functools import wraps
 
 
 CONFIG_DIR = os.path.join(os.path.expanduser("~"), '.deform/')
-CONFIG_PATH = os.path.join(CONFIG_DIR, 'config.yml')
+CONFIG_PATH = os.path.join(CONFIG_DIR, 'config.json')
 
 
 def get_or_create_config_file(mode='rt'):
     try:
         return open(CONFIG_PATH, mode)
     except IOError:
+        # ensure config dir exists
+        try:
+            os.makedirs(CONFIG_DIR)
+        except OSError:
+            pass
+
+        # create config file
         with open(CONFIG_PATH, 'wt') as config_file:
-            config_file.write('{}')
+            config_file.write(
+                json.dumps({
+                    'settings': {
+                        'api': {
+                            'host': 'deform.io'
+                        }
+                    }
+                })
+            )
         return open(CONFIG_PATH, mode)
 
 
@@ -35,49 +50,79 @@ def save_config(data):
 
 def handle_errors(f):
     @wraps(f)
-    def wrapper(*args, **kwargs):
+    def wrapper(ctx, *args, **kwargs):
         try:
-            return f(*args, **kwargs)
+            return f(ctx, *args, **kwargs)
         except DeformException as e:
             error = str(e)
             if e.errors:
                 error = '%s: %s' % (error, json.dumps(e.errors))
-            click.echo(error)
+            click.echo(error, err=True)
+            ctx.exit(1)
     return wrapper
 
 
-def get_client(config):
-    return pydeform.Client(
-        host='deform.chib.me',
-        request_defaults={'verify': False}
-    )
+def get_client():
+    config = load_config()
+    return pydeform.Client(**config['settings']['api'])
 
 
-def get_session_client(config):
-    return get_client(config).auth(
+def get_session_client():
+    config = load_config()
+    return get_client().auth(
         'session',
-        config['sessions'][config['active_session']]['auth_session_id']
+        config['session']['session_id']
     )
 
 
-def save_session(config, email, auth_session_id):
-    config['sessions'][email]['auth_session_id'] = auth_session_id
+def save_settings(api_host=None,
+                  api_port=None,
+                  api_secure=None,
+                  api_request_defaults=None):
+    config = load_config()
+
+    if api_host is not None:
+        config['settings']['api']['host'] = api_host
+
+    if api_port is not None:
+        config['settings']['api']['port'] = api_port
+
+    if api_secure is not None:
+        config['settings']['api']['secure'] = api_secure
+
+    if api_request_defaults is not None:
+        config['settings']['api']['request_defaults'] = api_request_defaults
+
     save_config(config)
 
 
-def echo_json(data):
-    click.echo(
-        highlight(
-            json.dumps(
-                data,
-                sort_keys=True,
-                indent=4,
-                separators=(',', ': ')
-            ),
+def save_session(email, session_id):
+    config = load_config()
+    config['session'] = {
+        'email': email,
+        'session_id': session_id
+    }
+    save_config(config)
+
+
+def echo_json(data, nl=True):
+    highlight = False
+    json_data = json.dumps(
+        data,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    )
+    if highlight:
+        json_data = highlight(
+            json_data,
             JsonLexer(),
             Terminal256Formatter(style=Solarized256Style),
-        ),
-        nl=False
+        )
+
+    click.echo(
+        json_data,
+        nl=nl
     )
 
 

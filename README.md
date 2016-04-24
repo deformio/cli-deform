@@ -1,4 +1,4 @@
-Command line interface for [Deform.io](https://deform.io)
+Command-line interface for [Deform.io](https://deform.io)
 
 Installation:
 
@@ -6,16 +6,13 @@ Installation:
 
 Usage:
 
-    $ deform  # should show version, current session and current project
+    $ deform  # shows help
     $ deform login --email <email> --password <password>
-    $ deform login  # interactive if no params send
-    $ deform sessions
-    $ deform use-session <email>
+    $ deform whoami
     $ deform projects
-    $ deform project mysquare
-    $ deform use-project mysquare
-    $ deform active-project
-    $ deform
+    $ deform project
+    $ deform project info mysquare
+    $ deform project use mysquare
     $ deform collections
     $ deform documents -c venues
     $ deform document -i subway -c venues
@@ -38,13 +35,13 @@ next command will fail:
 
 You can send variables with command:
 
-    $ DEFORM_HOST='"deform.chib.me"' tox
+    $ DEFORM_HOST='"deform.io"' tox
 
 The more convenient way would be to create a `.test_config` file a save data there.
 This file is ignored by git and won't be commeted.
 
     $ cat .test_config
-    DEFORM_HOST='"deform.chib.me"'
+    DEFORM_HOST='"deform.io"'
     DEFORM_EMAIL='"email@example.ru"'
     DEFORM_PASSWORD='"hello"'
     ...
@@ -57,15 +54,11 @@ All config values must be specified with JSON types.
 
 Running tests just for one environment:
 
-    $ eval $(cat .test_config) tox -e py3
+    $ eval $(cat .test_config) tox -e py27
 
-Running tests from directory:
+Running tests for specific feature:
 
-    $ eval $(cat .test_config) tox -e py3 -- tests.unit.client
-
-Running the specific test case:
-
-    $ eval $(cat .test_config) tox -e py3 -- tests.unit.client.tests:ClientTest__login
+    $ eval $(cat .test_config) tox -e py27 -- -i login.feature
 
 ### Codestyle
 

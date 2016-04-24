@@ -5,3 +5,4 @@
 __pycache__
 site/
 dist/
+.test_config

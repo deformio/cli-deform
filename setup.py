@@ -56,14 +56,14 @@ setup(
     version=version,
     url='https://github.com/deformio/cli-deform/',
     license='MIT',
-    description='Command line client for Deform.io',
+    description='Command-line client for Deform.io',
     author='Gennady Chibisov',
     author_email='web-chib@ya.ru',
     install_requires=[
         'click>=6.3',
         'python-deform>=0.0.3',
         'pygments>=2.1.3',
-        'cli-bdd>=0.0.2',
+        'cli-bdd>=0.0.3',
     ],
     entry_points="""
         [console_scripts]

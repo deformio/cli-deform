@@ -6,17 +6,16 @@ Feature: deform without parameters
             """
             Usage: deform [OPTIONS] COMMAND [ARGS]...
 
-              Command line client for Deform.io
+              Command-line client for Deform.io
 
             Options:
               -h, --help  Show this message and exit.
 
             Commands:
-              active-project  Current project
-              collections     List of the collections in the project
-              documents       List of the documents in the collection
-              login           Authenticates against the API
-              project         Project info
-              projects        List of the projects of the user
-              sessions        List of the sessions (logins)
+              login     Authenticates against the API
+              projects  Shows all projects available for user
+              settings  CLI settings
+              version   Outputs the client version
+              whoami    Outputs the current user
+
             """

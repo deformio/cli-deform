@@ -8,6 +8,7 @@ from utils import (
     get_client,
     get_session_client,
     save_session,
+    save_settings,
     echo_json,
     JSONParamType
 )
@@ -23,31 +24,77 @@ requests.packages.urllib3.disable_warnings()
 @click.group(context_settings={'help_option_names': ['-h', '--help']})
 @click.pass_context
 def cli(ctx):
-    """Command line client for Deform.io"""
-    ctx.obj = load_config()
+    """Command-line client for Deform.io"""
+    pass
+
+
+@cli.command()
+def version():
+    """Outputs the client version"""
+    click.echo(VERSION)
+
+
+@cli.group()
+@click.pass_context
+def settings(ctx):
+    """CLI settings"""
+    pass
+
+
+@settings.command()
+@click.pass_context
+def show(ctx):
+    """Show settings"""
+    echo_json(load_config()['settings'])
+
+
+@settings.command()
+@click.option('--api-host')
+@click.option('--api-port', type=int)
+@click.option('--api-secure', type=bool)
+@click.option('--api-request-defaults', type=JSONParamType())
+@click.pass_context
+def change(ctx, api_host, api_port, api_secure, api_request_defaults):
+    """Change settings"""
+    save_settings(
+        api_host=api_host,
+        api_port=api_port,
+        api_secure=api_secure,
+        api_request_defaults=api_request_defaults,
+    )
 
 
 @cli.command()
 @click.option('--email', '-e', prompt=True)
 @click.option('--password', '-p', prompt=True, hide_input=True)
-@click.pass_obj
+@click.pass_context
 @handle_errors
-def login(config, email, password):
+def login(ctx, email, password):
     """Authenticates against the API"""
     save_session(
-        config=config,
         email=email,
-        auth_session_id=get_client(config).user.login(
+        session_id=get_client().user.login(
             email=email,
             password=password
         )
     )
+    click.echo('Successfully logged in!')
 
 
-# @cli.command()
-# @click.pass_obj
-# def sessions(config):
-#     echo_json(config['sessions'])
+@cli.command()
+@click.pass_context
+def whoami(ctx):
+    """Outputs the current user"""
+    click.echo('You are %s' % load_config()['session']['email'])
+
+
+@cli.command()
+@click.option('--filter', '-f', 'filter_', type=JSONParamType(), default='{}')
+@click.pass_context
+def projects(ctx, filter_):
+    """Shows all projects available for user"""
+    for project in get_session_client().projects.find(filter=filter_):
+        echo_json(project)
 
 
 # @cli.command()
