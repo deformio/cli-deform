@@ -1,4 +1,5 @@
 import os, json
+from pydeform import Client
 
 
 def get_setting(name, required=True):
@@ -36,3 +37,22 @@ CONFIG = {
     },
     'BASE_PATH': os.path.dirname(os.path.normpath(__file__))
 }
+
+
+deform_client = Client(
+    host=CONFIG['DEFORM']['HOST'],
+    port=CONFIG['DEFORM']['PORT'],
+    request_defaults=CONFIG['DEFORM']['REQUEST_DEFAULTS'],
+    api_base_path=CONFIG['DEFORM']['API_BASE_PATH'],
+    secure=CONFIG['DEFORM']['SECURE'],
+)
+deform_session_client = deform_client.auth(
+    'session',
+    deform_client.user.login(
+        email=CONFIG['DEFORM']['EMAIL'],
+        password=CONFIG['DEFORM']['PASSWORD']
+    )
+)
+deform_session_project_client = deform_session_client.use_project(
+    CONFIG['DEFORM']['PROJECT']
+)

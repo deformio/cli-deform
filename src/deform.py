@@ -9,6 +9,7 @@ from utils import (
     get_session_client,
     save_session,
     save_settings,
+    get_session_or_raise,
     echo_json,
     JSONParamType
 )
@@ -83,14 +84,16 @@ def login(ctx, email, password):
 
 @cli.command()
 @click.pass_context
+@handle_errors
 def whoami(ctx):
     """Outputs the current user"""
-    click.echo('You are %s' % load_config()['session']['email'])
+    click.echo('You are %s' % get_session_or_raise()['email'])
 
 
 @cli.command()
 @click.option('--filter', '-f', 'filter_', type=JSONParamType(), default='{}')
 @click.pass_context
+@handle_errors
 def projects(ctx, filter_):
     """Shows all projects available for user"""
     for project in get_session_client().projects.find(filter=filter_):

@@ -14,16 +14,20 @@ Feature: deform projects
 
             """
 
+    Scenario: Running command with not logged in user
+        When I run `deform projects`
+        Then I should be asked to login first
+
     Scenario: Run projects command
         Given I am logged in
         When I successfully run `deform projects`
         Then the output should contain available for user projects
 
-    # Scenario: Run projects command with filter
-    #     Given I am logged in
-    #     When I successfully run `deform projects <argument_name> `
-    #     Examples: Filter argument names
-    #         | argument_name   |
-    #         | -f              |
-    #         | --filter        |
-    #     Then the output should contain available for user projects
+    Scenario Outline: Run projects command with filter
+        Given I am logged in
+        When I filter projects with <argument_name> argument by name
+        Then the output should contain filtered by name projects
+    Examples: Filter argument names
+        | argument_name   |
+        | -f              |
+        | --filter        |

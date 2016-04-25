@@ -4,7 +4,11 @@ from cli_bdd.behave.steps import *
 
 from src.deform import VERSION
 from src.utils import load_config
-from tests.testutils import CONFIG
+from tests.testutils import (
+    CONFIG,
+    deform_session_client,
+    deform_session_project_client,
+)
 
 
 @when('rpdb')
@@ -101,16 +105,55 @@ def step_impl(context):
 
 @then('the output should contain available for user projects')
 def step_impl(context):
+    for project in deform_session_client.projects.find():
+        context.execute_steps(
+            u'''
+                Then the output should contain:
+                    """
+                    "_id": "%(project_id)s"
+                    """
+            ''' % dict(
+                project_id=project['_id']
+            )
+        )
+
+
+@then('I should be asked to login first')
+def step_impl(context):
     context.execute_steps(
         u'''
             Then the output should contain:
                 """
-                {
-                    "_id": "%(project_id)s",
-                    "name": "%(project_name)s",
+                You are not logged in. Use `deform login` for authorization.
                 """
-        ''' % dict(
-            project_id=CONFIG['DEFORM']['PROJECT'],
-            project_name=CONFIG['DEFORM']['PROJECT_NAME'],
+            And the exit status should be 1
+        '''
+    )
+
+
+@when('I filter projects with (?P<filter_argument>[-\w]+) argument by name')
+def step_impl(context, filter_argument):
+    context.execute_steps(
+        u'When I successfully run '
+        '`deform projects %s \'{"name":"%s"}\'`' % (
+            filter_argument,
+            CONFIG['DEFORM']['PROJECT_NAME']
         )
     )
+
+
+@then('the output should contain filtered by name projects')
+def step_impl(context):
+    for project in deform_session_client.projects.find(
+        filter={'name': CONFIG['DEFORM']['PROJECT_NAME']}
+    ):
+        context.execute_steps(
+            u'''
+                Then the output should contain:
+                    """
+                    "_id": "%(project_id)s"
+                    """
+            ''' % dict(
+                project_id=project['_id']
+            )
+        )

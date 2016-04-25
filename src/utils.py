@@ -16,6 +16,10 @@ CONFIG_DIR = os.path.join(os.path.expanduser("~"), '.deform/')
 CONFIG_PATH = os.path.join(CONFIG_DIR, 'config.json')
 
 
+class AuthRequired(Exception):
+    pass
+
+
 def get_or_create_config_file(mode='rt'):
     try:
         return open(CONFIG_PATH, mode)
@@ -59,6 +63,13 @@ def handle_errors(f):
                 error = '%s: %s' % (error, json.dumps(e.errors))
             click.echo(error, err=True)
             ctx.exit(1)
+        except AuthRequired as e:
+            click.echo(
+                'You are not logged in. Use `deform login` for authorization.',
+                err=True
+            )
+            ctx.exit(1)
+
     return wrapper
 
 
@@ -68,10 +79,9 @@ def get_client():
 
 
 def get_session_client():
-    config = load_config()
     return get_client().auth(
         'session',
-        config['session']['session_id']
+        get_session_or_raise()['session_id']
     )
 
 
@@ -96,6 +106,14 @@ def save_settings(api_host=None,
     save_config(config)
 
 
+def get_session_or_raise():
+    config = load_config()
+    if 'session' in config:
+        return config['session']
+    else:
+        raise AuthRequired()
+
+
 def save_session(email, session_id):
     config = load_config()
     config['session'] = {
@@ -106,14 +124,22 @@ def save_session(email, session_id):
 
 
 def echo_json(data, nl=True):
-    highlight = False
+    color = False
+    pretty = False
+
+    if pretty:
+        indent = 4
+    else:
+        indent = None
+
     json_data = json.dumps(
         data,
         sort_keys=True,
-        indent=4,
+        indent=indent,
         separators=(',', ': ')
     )
-    if highlight:
+
+    if color:
         json_data = highlight(
             json_data,
             JsonLexer(),
