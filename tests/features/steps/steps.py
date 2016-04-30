@@ -122,6 +122,19 @@ def step_impl(context, pretty):
         )
 
 
+@then('the output should contain number of available for user projects')
+def step_impl(context):
+    context.execute_steps(
+        u'''
+            Then the output should contain exactly:
+                """
+                %s
+
+                """
+        ''' % deform_session_client.projects.count()
+    )
+
+
 @then('I should be asked to login first')
 def step_impl(context):
     context.execute_steps(
@@ -139,7 +152,46 @@ def step_impl(context):
 def step_impl(context, filter_argument):
     context.execute_steps(
         u'When I successfully run '
-        '`deform projects %s \'{"name":"%s"}\'`' % (
+        '`deform projects find %s \'{"name":"%s"}\'`' % (
+            filter_argument,
+            CONFIG['DEFORM']['PROJECT_NAME']
+        )
+    )
+
+
+@when(
+    'I filter projects count '
+    'with (?P<filter_argument>[-\w]+) argument by name'
+)
+def step_impl(context, filter_argument):
+    context.execute_steps(
+        u'When I successfully run '
+        '`deform projects count %s \'{"name":"%s"}\'`' % (
+            filter_argument,
+            CONFIG['DEFORM']['PROJECT_NAME']
+        )
+    )
+
+
+@when('I filter projects with (?P<filter_argument>[-\w]+) argument by text')
+def step_impl(context, filter_argument):
+    context.execute_steps(
+        u'When I successfully run '
+        '`deform projects find %s "%s"`' % (
+            filter_argument,
+            CONFIG['DEFORM']['PROJECT_NAME']
+        )
+    )
+
+
+@when(
+    'I filter projects count with '
+    '(?P<filter_argument>[-\w]+) argument by text'
+)
+def step_impl(context, filter_argument):
+    context.execute_steps(
+        u'When I successfully run '
+        '`deform projects count %s "%s"`' % (
             filter_argument,
             CONFIG['DEFORM']['PROJECT_NAME']
         )
@@ -150,6 +202,23 @@ def step_impl(context, filter_argument):
 def step_impl(context):
     for project in deform_session_client.projects.find(
         filter={'name': CONFIG['DEFORM']['PROJECT_NAME']}
+    ):
+        context.execute_steps(
+            u'''
+                Then the output should contain:
+                    """
+                    "_id": "%(project_id)s"
+                    """
+            ''' % dict(
+                project_id=project['_id']
+            )
+        )
+
+
+@then('the output should contain filtered by full text projects')
+def step_impl(context):
+    for project in deform_session_client.projects.find(
+        text=CONFIG['DEFORM']['PROJECT_NAME']
     ):
         context.execute_steps(
             u'''

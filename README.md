@@ -58,7 +58,7 @@ Running tests just for one environment:
 
 Running tests for specific feature:
 
-    $ eval $(cat .test_config) tox -e py27 -- -i login.feature
+    $ eval $(cat .test_config) tox -e py27 -- -i projects/find.feature
 
 ### Codestyle
 

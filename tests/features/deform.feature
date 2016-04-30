@@ -13,7 +13,7 @@ Feature: deform without parameters
 
             Commands:
               login     Authenticates against the API
-              projects  Shows all projects available for user
+              projects  User's projects
               settings  CLI settings
               version   Outputs the client version
               whoami    Outputs the current user

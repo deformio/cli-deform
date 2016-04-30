@@ -11,7 +11,8 @@ from utils import (
     save_settings,
     get_session_or_raise,
     echo_json,
-    JSONParamType
+    JSONParamType,
+    options
 )
 
 __version__ = '0.0.1'
@@ -43,7 +44,7 @@ def settings(ctx):
 
 
 @settings.command()
-@click.option('--pretty', is_flag=True)
+@options.pretty()
 @click.pass_context
 def show(ctx, pretty):
     """Show settings"""
@@ -98,15 +99,41 @@ def whoami(ctx):
     click.echo('You are %s' % get_session_or_raise()['email'])
 
 
-@cli.command()
-@click.option('--filter', '-f', 'filter_', type=JSONParamType(), default='{}')
-@click.option('--pretty', is_flag=True)
+@cli.group()
+@click.pass_context
+def projects(ctx):
+    """User's projects"""
+    pass
+
+
+@projects.command()
+@options.filter()
+@options.text()
+@options.pretty()
 @click.pass_context
 @handle_errors
-def projects(ctx, filter_, pretty):
-    """Shows all projects available for user"""
-    for project in get_session_client().projects.find(filter=filter_):
+def find(ctx, filter_, text_, pretty):
+    """Find projects available for user"""
+    for project in get_session_client().projects.find(
+        filter=filter_,
+        text=text_
+    ):
         echo_json(project, pretty=pretty)
+
+
+@projects.command()
+@options.filter()
+@options.text()
+@click.pass_context
+@handle_errors
+def count(ctx, filter_, text_):
+    """Number of projects available for user"""
+    echo_json(
+        get_session_client().projects.count(
+            filter=filter_,
+            text=text_
+        )
+    )
 
 
 # @cli.command()

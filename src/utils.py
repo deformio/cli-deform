@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+from functools import partial
+
 import click
 import pydeform
 from pydeform.exceptions import DeformException
@@ -14,6 +16,46 @@ from functools import wraps
 
 CONFIG_DIR = os.path.join(os.path.expanduser("~"), '.deform/')
 CONFIG_PATH = os.path.join(CONFIG_DIR, 'config.json')
+
+
+class JSONParamType(click.types.StringParamType):
+    name = 'json'
+
+    def convert(self, value, param, ctx):
+        value = super(JSONParamType, self).convert(
+            value=value,
+            param=param,
+            ctx=ctx,
+        )
+        try:
+            return json.loads(value)
+        except ValueError:
+            self.fail(value, param, ctx)
+
+
+class Options(object):
+    def __init__(self):
+        self.filter = partial(
+            click.option,
+            '--filter',
+            '-f',
+            'filter_',
+            type=JSONParamType(),
+            default='{}',
+            help='Filter query'
+        )
+        self.text = partial(
+            click.option,
+            '--text',
+            '-t',
+            'text_',
+            default='',
+            help='Full text search value'
+        )
+        self.pretty = partial(click.option, '--pretty', is_flag=True)
+
+
+options = Options()
 
 
 class AuthRequired(Exception):
@@ -154,21 +196,6 @@ def get_json(data, pretty=False, color=False):
             Terminal256Formatter(style=Solarized256Style),
         )
     return json_data
-
-
-class JSONParamType(click.types.StringParamType):
-    name = 'json'
-
-    def convert(self, value, param, ctx):
-        value = super(JSONParamType, self).convert(
-            value=value,
-            param=param,
-            ctx=ctx,
-        )
-        try:
-            return json.loads(value)
-        except ValueError:
-            self.fail(value, param, ctx)
 
 
 class Solarized256Style(pygments.style.Style):
