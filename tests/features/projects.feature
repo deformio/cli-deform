@@ -10,6 +10,7 @@ Feature: deform projects
 
             Options:
               -f, --filter JSON
+              --pretty
               -h, --help         Show this message and exit.
 
             """
@@ -22,6 +23,11 @@ Feature: deform projects
         Given I am logged in
         When I successfully run `deform projects`
         Then the output should contain available for user projects
+
+    Scenario: Run projects command with pretty print
+        Given I am logged in
+        When I successfully run `deform projects --pretty`
+        Then the output should contain available for user projects with pretty print
 
     Scenario Outline: Run projects command with filter
         Given I am logged in

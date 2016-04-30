@@ -63,6 +63,7 @@ setup(
         'click>=6.3',
         'python-deform>=0.0.3',
         'pygments>=2.1.3',
+        'colorama>=0.3.7',
         'cli-bdd>=0.0.3',
     ],
     entry_points="""

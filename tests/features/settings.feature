@@ -26,12 +26,21 @@ Feature: deform settings
               Show settings
 
             Options:
+              --pretty
               -h, --help  Show this message and exit.
 
             """
 
-    Scenario: Settings show
+    Scenario: Show default settings
         When I successfully run `deform settings show`
+        Then the output should contain exactly:
+            """
+            {"api": {"host": "deform.io"}}
+
+            """
+
+    Scenario: Show settings with pretty
+        When I successfully run `deform settings show --pretty`
         Then the output should contain exactly:
             """
             {
@@ -61,7 +70,7 @@ Feature: deform settings
 
     Scenario: Settings change host
         When I successfully run `deform settings change --api-host newhost.io`
-        And I successfully run `deform settings show`
+        And I successfully run `deform settings show --pretty`
         Then the output should contain exactly:
             """
             {
@@ -74,7 +83,7 @@ Feature: deform settings
 
     Scenario: Settings change port
         When I successfully run `deform settings change --api-port 99`
-        And I successfully run `deform settings show`
+        And I successfully run `deform settings show --pretty`
         Then the output should contain exactly:
             """
             {
@@ -88,7 +97,7 @@ Feature: deform settings
 
     Scenario: Settings change secure
         When I successfully run `deform settings change --api-secure false`
-        And I successfully run `deform settings show`
+        And I successfully run `deform settings show --pretty`
         Then the output should contain exactly:
             """
             {
@@ -102,7 +111,7 @@ Feature: deform settings
 
     Scenario: Settings change request defaults
         When I successfully run `deform settings change --api-request-defaults '{"verify":false}'`
-        And I successfully run `deform settings show`
+        And I successfully run `deform settings show --pretty`
         Then the output should contain exactly:
             """
             {
@@ -119,7 +128,7 @@ Feature: deform settings
     Scenario: Settings change reseting request defaults
         When I successfully run `deform settings change --api-request-defaults '{"verify":false}'`
         And I successfully run `deform settings change --api-request-defaults '{}'`
-        And I successfully run `deform settings show`
+        And I successfully run `deform settings show --pretty`
         Then the output should contain exactly:
             """
             {

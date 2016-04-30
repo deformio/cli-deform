@@ -123,10 +123,18 @@ def save_session(email, session_id):
     save_config(config)
 
 
-def echo_json(data, nl=True):
-    color = False
-    pretty = False
+def echo_json(data, pretty=False, color=False, nl=True):
+    click.echo(
+        get_json(
+            data=data,
+            pretty=pretty,
+            color=color,
+        ),
+        nl=nl
+    )
 
+
+def get_json(data, pretty=False, color=False):
     if pretty:
         indent = 4
     else:
@@ -145,11 +153,7 @@ def echo_json(data, nl=True):
             JsonLexer(),
             Terminal256Formatter(style=Solarized256Style),
         )
-
-    click.echo(
-        json_data,
-        nl=nl
-    )
+    return json_data
 
 
 class JSONParamType(click.types.StringParamType):

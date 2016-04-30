@@ -43,10 +43,14 @@ def settings(ctx):
 
 
 @settings.command()
+@click.option('--pretty', is_flag=True)
 @click.pass_context
-def show(ctx):
+def show(ctx, pretty):
     """Show settings"""
-    echo_json(load_config()['settings'])
+    echo_json(
+        load_config()['settings'],
+        pretty=pretty
+    )
 
 
 @settings.command()
@@ -55,7 +59,11 @@ def show(ctx):
 @click.option('--api-secure', type=bool)
 @click.option('--api-request-defaults', type=JSONParamType())
 @click.pass_context
-def change(ctx, api_host, api_port, api_secure, api_request_defaults):
+def change(ctx,
+           api_host,
+           api_port,
+           api_secure,
+           api_request_defaults):
     """Change settings"""
     save_settings(
         api_host=api_host,
@@ -92,12 +100,13 @@ def whoami(ctx):
 
 @cli.command()
 @click.option('--filter', '-f', 'filter_', type=JSONParamType(), default='{}')
+@click.option('--pretty', is_flag=True)
 @click.pass_context
 @handle_errors
-def projects(ctx, filter_):
+def projects(ctx, filter_, pretty):
     """Shows all projects available for user"""
     for project in get_session_client().projects.find(filter=filter_):
-        echo_json(project)
+        echo_json(project, pretty=pretty)
 
 
 # @cli.command()

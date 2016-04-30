@@ -103,18 +103,22 @@ def step_impl(context):
     )
 
 
-@then('the output should contain available for user projects')
-def step_impl(context):
+@then(
+    'the output should contain available for '
+    'user projects\s?(?P<pretty>with pretty print)?'
+)
+def step_impl(context, pretty):
     for project in deform_session_client.projects.find():
+        expected = '"_id": "%s"' % project['_id']
+        if pretty:
+            expected = '    ' + expected
         context.execute_steps(
             u'''
                 Then the output should contain:
                     """
-                    "_id": "%(project_id)s"
+                    %s
                     """
-            ''' % dict(
-                project_id=project['_id']
-            )
+            ''' % expected
         )
 
 
