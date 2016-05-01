@@ -9,6 +9,7 @@ from utils import (
     get_session_client,
     save_session,
     save_settings,
+    save_current_project,
     get_session_or_raise,
     echo_json,
     JSONParamType,
@@ -134,6 +135,25 @@ def count(ctx, filter_, text_):
             text=text_
         )
     )
+
+
+@cli.command('use-project')
+@click.argument('project_id')
+@click.pass_context
+@handle_errors
+def use_project(ctx, project_id):
+    """Set current project"""
+    has_project = False
+    for project in get_session_client().projects.find():
+        if project_id == project['_id']:
+            has_project = True
+            break
+    if not has_project:
+        msg = "You're not a member of the project %s" % project_id
+        click.echo(msg, err=True)
+        ctx.exit(1)
+    save_current_project(project_id)
+    click.echo('Switched to project %s' % project_id)
 
 
 # @cli.command()

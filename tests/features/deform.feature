@@ -12,10 +12,11 @@ Feature: deform without parameters
               -h, --help  Show this message and exit.
 
             Commands:
-              login     Authenticates against the API
-              projects  User's projects
-              settings  CLI settings
-              version   Outputs the client version
-              whoami    Outputs the current user
+              login        Authenticates against the API
+              projects     User's projects
+              settings     CLI settings
+              use-project  Set current project
+              version      Outputs the client version
+              whoami       Outputs the current user
 
             """

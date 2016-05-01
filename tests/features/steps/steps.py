@@ -230,3 +230,37 @@ def step_impl(context):
                 project_id=project['_id']
             )
         )
+
+
+@given("I use current user's project")
+def step_impl(context):
+    context.execute_steps(
+        u'When I successfully run '
+        '`deform use-project %s`' % (
+            CONFIG['DEFORM']['PROJECT']
+        )
+    )
+
+
+@then("the output should contain successfull switch to project info")
+def step_impl(context):
+    context.execute_steps(
+        u'''
+            Then the output should contain exactly:
+                """
+                Switched to project %s
+
+                """
+        ''' % CONFIG['DEFORM']['PROJECT']
+    )
+
+
+@then("the current project in settings should be current user's project")
+def step_impl(context):
+    assert_that(
+        load_config(),
+        has_entry(
+            'current_project',
+            CONFIG['DEFORM']['PROJECT']
+        )
+    )

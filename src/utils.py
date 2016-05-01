@@ -127,6 +127,13 @@ def get_session_client():
     )
 
 
+def get_session_project_client():
+    config = load_config()
+    return get_session_client().use_project(
+        project_id=config['current_project']
+    )
+
+
 def save_settings(api_host=None,
                   api_port=None,
                   api_secure=None,
@@ -145,6 +152,12 @@ def save_settings(api_host=None,
     if api_request_defaults is not None:
         config['settings']['api']['request_defaults'] = api_request_defaults
 
+    save_config(config)
+
+
+def save_current_project(project_id):
+    config = load_config()
+    config['current_project'] = project_id
     save_config(config)
 
 
