@@ -1,4 +1,4 @@
-Feature: deform projects count
+Feature: deform collection get
 
     Scenario: Show command help
         When I successfully run `deform collection get -h`

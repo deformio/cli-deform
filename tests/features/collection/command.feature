@@ -15,7 +15,7 @@ Feature: deform collection
               create  Creates a collection
               get     Returns a collection
               remove  Removes a collection
-              update  Updates a collection
               save    Saves a collection
+              update  Updates a collection
 
             """

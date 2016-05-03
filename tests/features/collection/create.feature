@@ -1,4 +1,4 @@
-Feature: deform projects count
+Feature: deform collection create
 
     Background: Cleaning collections
         Given there is no "venues" collection in current user's project

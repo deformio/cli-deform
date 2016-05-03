@@ -235,6 +235,27 @@ def create(ctx, data):
 
 
 @collection.command()
+@click.argument('collection_id', required=False)
+@options.data()
+@options.property()
+@click.pass_context
+@handle_errors
+def save(ctx, collection_id, data, property_):
+    """Saves a collection"""
+    response = get_session_project_client().collection.save(
+        identity=collection_id,
+        data=data,
+        property=property_
+    )
+    if property_:
+        click.echo('Property saved')
+    elif response['created']:
+        click.echo('Collection created')
+    else:
+        click.echo('Collection updated')
+
+
+@collection.command()
 @click.argument('collection_id')
 @click.pass_context
 @handle_errors

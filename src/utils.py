@@ -39,8 +39,11 @@ class PropertyParamType(click.types.StringParamType):
             value=value,
             param=param,
             ctx=ctx,
-        )
-        return value.split('.')
+        ).strip()
+        if value:
+            return value.split('.')
+        else:
+            return value
 
 
 class Options(object):
