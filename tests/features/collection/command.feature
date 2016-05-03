@@ -16,5 +16,6 @@ Feature: deform collection
               get     Returns a collection
               remove  Removes a collection
               update  Updates a collection
+              save    Saves a collection
 
             """

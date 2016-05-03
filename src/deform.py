@@ -225,12 +225,13 @@ def get(ctx, collection_id, pretty, property_):
 
 
 @collection.command()
-@click.argument('collection_id')
+@options.data()
 @click.pass_context
 @handle_errors
-def create(ctx, collection_id):
+def create(ctx, data):
     """Creates a collection"""
-    pass
+    get_session_project_client().collection.create(data=data)
+    click.echo('Collection created')
 
 
 @collection.command()

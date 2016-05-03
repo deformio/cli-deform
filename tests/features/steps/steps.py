@@ -1,6 +1,7 @@
 from behave import when, then
 from hamcrest import assert_that, has_entry, has_entries, is_not
 from cli_bdd.behave.steps import *
+from pydeform.exceptions import NotFoundError
 
 from src.deform import VERSION
 from src.utils import load_config
@@ -335,3 +336,13 @@ def step_impl(context, pretty):
                 """
         ''' % expected
     )
+
+
+@given('there is no "(?P<collection_id>\w+)" collection in current user\'s project')
+def step_impl(context, collection_id):
+    try:
+        deform_session_project_client.collection.remove(
+            identity=collection_id
+        )
+    except NotFoundError:
+        pass
