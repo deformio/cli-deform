@@ -2,3 +2,4 @@ behave==1.2.5
 rpdb==0.1.6
 pyhamcrest>=1.8.5
 cli-bdd>=0.0.4
+flask==0.10.1

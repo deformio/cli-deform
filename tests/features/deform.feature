@@ -12,10 +12,12 @@ Feature: deform without parameters
               -h, --help  Show this message and exit.
 
             Commands:
+              collection   Collection manipulation commands
               login        Authenticates against the API
+              project      Project manipulation commands
               projects     User's projects
               settings     CLI settings
-              use-project  Set current project
+              use-project  Sets a current project
               version      Outputs the client version
               whoami       Outputs the current user
 

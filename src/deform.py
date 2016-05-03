@@ -7,6 +7,7 @@ from utils import (
     handle_errors,
     get_client,
     get_session_client,
+    get_session_project_client,
     save_session,
     save_settings,
     save_current_project,
@@ -102,6 +103,49 @@ def whoami(ctx):
 
 @cli.group()
 @click.pass_context
+def project(ctx):
+    """Project manipulation commands"""
+    pass
+
+
+@project.command()
+@options.data()
+@click.pass_context
+@handle_errors
+def create(ctx, data):
+    """Creates project"""
+    get_session_client().project.create(data=data)
+    click.echo('Project created')
+
+
+@project.command()
+@click.pass_context
+@click.argument('project_id')
+@options.pretty()
+@handle_errors
+def get(ctx, project_id, pretty):
+    """Returns project's data"""
+    echo_json(
+        get_session_client().project.get(identity=project_id),
+        pretty=pretty
+    )
+
+
+@project.command()
+@options.data()
+@click.pass_context
+@handle_errors
+def save(ctx, data):
+    """Saves project"""
+    response = get_session_client().project.save(data=data)
+    if response['created']:
+        click.echo('Project created')
+    else:
+        click.echo('Project updated')
+
+
+@cli.group()
+@click.pass_context
 def projects(ctx):
     """User's projects"""
     pass
@@ -142,7 +186,7 @@ def count(ctx, filter_, text_):
 @click.pass_context
 @handle_errors
 def use_project(ctx, project_id):
-    """Set current project"""
+    """Sets a current project"""
     has_project = False
     for project in get_session_client().projects.find():
         if project_id == project['_id']:
@@ -156,15 +200,52 @@ def use_project(ctx, project_id):
     click.echo('Switched to project %s' % project_id)
 
 
-# @cli.command()
-# @click.pass_obj
-# @click.option('--filter', '-f', 'filter_', type=JSONParamType(), default='{}')
-# @handle_errors
-# def projects(config, filter_):
-#     for project in get_session_client(config).projects.find(filter=filter_):
-#         echo_json(project)
-#
-#
+@cli.group()
+@click.pass_context
+def collection(ctx):
+    """Collection manipulation commands"""
+    pass
+
+
+@collection.command()
+@click.argument('collection_id', required=True)
+@click.pass_context
+@handle_errors
+def get(ctx, collection_id):
+    """Returns a collection"""
+    echo_json(
+        get_session_project_client().collection.get.get_context(dict(identity=collection_id))
+    )
+
+
+@collection.command()
+@click.argument('collection_id')
+@click.pass_context
+@handle_errors
+def create(ctx, collection_id):
+    """Creates a collection"""
+    pass
+
+
+@collection.command()
+@click.argument('collection_id')
+@click.pass_context
+@handle_errors
+def update(ctx, collection_id):
+    """Updates a collection"""
+    pass
+
+
+@collection.command()
+@click.argument('collection_id')
+@click.pass_context
+@handle_errors
+def remove(ctx, collection_id):
+    """Removes a collection"""
+    pass
+
+
+
 # @cli.command()
 # @click.option('--identity', '-i', prompt=True)
 # @click.pass_obj

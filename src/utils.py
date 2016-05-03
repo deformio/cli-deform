@@ -35,6 +35,15 @@ class JSONParamType(click.types.StringParamType):
 
 class Options(object):
     def __init__(self):
+        self.data = partial(
+            click.option,
+            '--data',
+            '-d',
+            'data',
+            type=JSONParamType(),
+            default='{}',
+            help='Data'
+        )
         self.filter = partial(
             click.option,
             '--filter',
@@ -59,6 +68,10 @@ options = Options()
 
 
 class AuthRequired(Exception):
+    pass
+
+
+class CurrentProjectRequired(Exception):
     pass
 
 
@@ -111,6 +124,12 @@ def handle_errors(f):
                 err=True
             )
             ctx.exit(1)
+        except CurrentProjectRequired as e:
+            click.echo(
+                "You didn't specify current project. Use `deform use-project`.",
+                err=True
+            )
+            ctx.exit(1)
 
     return wrapper
 
@@ -128,9 +147,8 @@ def get_session_client():
 
 
 def get_session_project_client():
-    config = load_config()
     return get_session_client().use_project(
-        project_id=config['current_project']
+        project_id=get_current_project_or_raise()
     )
 
 
@@ -167,6 +185,14 @@ def get_session_or_raise():
         return config['session']
     else:
         raise AuthRequired()
+
+
+def get_current_project_or_raise():
+    config = load_config()
+    if 'current_project' in config:
+        return config['current_project']
+    else:
+        raise CurrentProjectRequired()
 
 
 def save_session(email, session_id):

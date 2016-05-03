@@ -1,9 +1,11 @@
 import shutil
 import tempfile
 import os
+from threading import Thread
 
 from src.utils import CONFIG_DIR, save_settings
 from tests.testutils import CONFIG
+from tests.mock_server import app as mock_server_app
 
 
 def before_all(context):
@@ -14,6 +16,16 @@ def before_all(context):
     except OSError:
         pass
     os.chdir(home)
+
+    # run mock server
+    context.mock_server = Thread(
+        target=mock_server_app.run,
+        kwargs={
+            'port': CONFIG['MOCK_SERVER']['PORT']
+        }
+    )
+    context.mock_server.daemon = True
+    context.mock_server.start()
 
 
 def before_scenario(context, scenario):

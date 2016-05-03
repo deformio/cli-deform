@@ -64,8 +64,15 @@ def step_impl(context):
 @given('I am logged in')
 def step_impl(context):
     context.execute_steps(
-        u'When I run login command with valid '
-        'credentials providing -e and -p arguments'
+        u'''
+            When I run login command with valid credentials providing -e and -p arguments
+            Then the output should contain exactly:
+                """
+                Successfully logged in!
+
+                """
+            Then the exit status should be 0
+        '''
     )
 
 
@@ -263,4 +270,68 @@ def step_impl(context):
             'current_project',
             CONFIG['DEFORM']['PROJECT']
         )
+    )
+
+
+@then("I should be asked to set current project")
+def step_impl(context):
+    context.execute_steps(
+        u'''
+            Then the output should contain:
+                """
+                You didn't specify current project. Use `deform use-project`.
+                """
+            And the exit status should be 1
+        '''
+    )
+
+
+@given("I use a current user's project")
+def step_impl(context):
+    context.execute_steps(
+        u'''
+            When I successfully run `deform use-project %s`
+        ''' % CONFIG['DEFORM']['PROJECT']
+    )
+
+
+@given("I use deform mock server")
+def step_impl(context):
+    context.execute_steps(
+        (
+            u'When I successfully run '
+             '`deform settings change '
+             '--api-host %(host)s '
+             '--api-port %(port)s '
+             '--api-secure false`'
+        ) % {
+            'host': CONFIG['MOCK_SERVER']['HOST'],
+            'port': CONFIG['MOCK_SERVER']['PORT'],
+        } + (
+            u'\n'
+             'Then the exit status should be 0'
+        )
+    )
+
+@when("I am getting user's project info\s?(?P<pretty>with pretty print)?")
+def step_impl(context, pretty):
+    command = u'When I run `deform project get %s%s`' % (
+        CONFIG['DEFORM']['PROJECT'],
+        ' --pretty' if pretty else ''
+    )
+    context.execute_steps(command )
+
+
+@then("the output should contain user's project info\s?(?P<pretty>with pretty print)?")
+def step_impl(context, pretty):
+    expected = '"_id": "%s"' % CONFIG['DEFORM']['PROJECT']
+    if pretty:
+        expected = '    ' + expected
+    context.execute_steps(
+        u'''
+            Then the output should contain:
+                """
+                %s
+                """
+        ''' % expected
     )

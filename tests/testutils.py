@@ -19,6 +19,17 @@ def get_setting(name, required=True):
                 'You should provide "%s" environ for settings' % name.upper()
             )
 
+
+def _get_free_port():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('127.0.0.1', 0))
+    s.listen(1)
+    port = s.getsockname()[1]
+    s.close()
+    return port
+
+
 CONFIG = {
     'DEFORM': {
         'HOST': get_setting('DEFORM_HOST'),
@@ -34,6 +45,10 @@ CONFIG = {
         'PROJECT_TOKEN': get_setting('DEFORM_PROJECT_TOKEN'),
         'EMAIL': get_setting('DEFORM_EMAIL'),
         'PASSWORD': get_setting('DEFORM_PASSWORD'),
+    },
+    'MOCK_SERVER': {
+        'HOST': 'localhost',
+        'PORT': _get_free_port(),
     },
     'BASE_PATH': os.path.dirname(os.path.normpath(__file__))
 }

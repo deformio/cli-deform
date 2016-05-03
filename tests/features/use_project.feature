@@ -6,10 +6,21 @@ Feature: deform use-project
             """
             Usage: deform use-project [OPTIONS] PROJECT_ID
 
-              Set current project
+              Sets a current project
 
             Options:
               -h, --help  Show this message and exit.
+
+            """
+
+    Scenario: Running command without project identity argument
+        When I run `deform use-project`
+        Then the exit status should be 2
+        Then the output should contain exactly:
+            """
+            Usage: deform use-project [OPTIONS] PROJECT_ID
+
+            Error: Missing argument "project_id".
 
             """
 
