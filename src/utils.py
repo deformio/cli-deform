@@ -33,6 +33,16 @@ class JSONParamType(click.types.StringParamType):
             self.fail(value, param, ctx)
 
 
+class PropertyParamType(click.types.StringParamType):
+    def convert(self, value, param, ctx):
+        value = super(PropertyParamType, self).convert(
+            value=value,
+            param=param,
+            ctx=ctx,
+        )
+        return value.split('.')
+
+
 class Options(object):
     def __init__(self):
         self.data = partial(
@@ -60,6 +70,15 @@ class Options(object):
             'text_',
             default='',
             help='Full text search value'
+        )
+        self.property = partial(
+            click.option,
+            '--property',
+            '-p',
+            'property_',
+            type=PropertyParamType(),
+            default='',
+            help='Work with specified property'
         )
         self.pretty = partial(click.option, '--pretty', is_flag=True)
 

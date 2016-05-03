@@ -6,7 +6,7 @@ Feature: deform project get
             """
             Usage: deform project get [OPTIONS] PROJECT_ID
 
-              Returns project's data
+              Returns a project's data
 
             Options:
               --pretty

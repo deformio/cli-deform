@@ -9,7 +9,7 @@ Feature: deform project create
             """
             Usage: deform project create [OPTIONS]
 
-              Creates project
+              Creates a project
 
             Options:
               -d, --data JSON  Data

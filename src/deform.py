@@ -113,7 +113,7 @@ def project(ctx):
 @click.pass_context
 @handle_errors
 def create(ctx, data):
-    """Creates project"""
+    """Creates a project"""
     get_session_client().project.create(data=data)
     click.echo('Project created')
 
@@ -124,7 +124,7 @@ def create(ctx, data):
 @options.pretty()
 @handle_errors
 def get(ctx, project_id, pretty):
-    """Returns project's data"""
+    """Returns a project's data"""
     echo_json(
         get_session_client().project.get(identity=project_id),
         pretty=pretty
@@ -136,7 +136,7 @@ def get(ctx, project_id, pretty):
 @click.pass_context
 @handle_errors
 def save(ctx, data):
-    """Saves project"""
+    """Saves a project"""
     response = get_session_client().project.save(data=data)
     if response['created']:
         click.echo('Project created')
@@ -209,12 +209,18 @@ def collection(ctx):
 
 @collection.command()
 @click.argument('collection_id', required=True)
+@options.pretty()
+@options.property()
 @click.pass_context
 @handle_errors
-def get(ctx, collection_id):
+def get(ctx, collection_id, pretty, property_):
     """Returns a collection"""
     echo_json(
-        get_session_project_client().collection.get.get_context(dict(identity=collection_id))
+        get_session_project_client().collection.get(
+            identity=collection_id,
+            property=property_
+        ),
+        pretty=pretty
     )
 
 

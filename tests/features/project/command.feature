@@ -12,8 +12,8 @@ Feature: deform project
               -h, --help  Show this message and exit.
 
             Commands:
-              create  Creates project
-              get     Returns project's data
-              save    Saves project
+              create  Creates a project
+              get     Returns a project's data
+              save    Saves a project
 
             """

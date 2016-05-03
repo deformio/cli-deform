@@ -9,7 +9,7 @@ Feature: deform project save
             """
             Usage: deform project save [OPTIONS]
 
-              Saves project
+              Saves a project
 
             Options:
               -d, --data JSON  Data
