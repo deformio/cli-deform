@@ -328,47 +328,132 @@ def count(ctx, filter_, text_):
     )
 
 
-# @cli.command()
-# @click.option('--identity', '-i', prompt=True)
-# @click.pass_obj
-# @handle_errors
-# def project(config, identity):
-#     echo_json(
-#         get_session_client(config).project.get(identity=identity)
-#     )
-#
-#
-# @cli.command('active-project')
-# @click.pass_obj
-# @handle_errors
-# def active_project(config):
-#     echo_json(
-#         get_session_client(config).use_project(
-#             config['sessions'][config['active_session']]['active_project_id']
-#         ).info.get()
-#     )
-#
-#
-# @cli.command()
-# @click.pass_obj
-# @handle_errors
-# def collections(config):
-#     for collection in get_session_client(config).use_project(
-#         config['sessions'][config['active_session']]['active_project_id']
-#     ).collections.find():
-#         echo_json(collection)
-#
-#
-# @cli.command()
-# @click.option('--collection', '-c', prompt=True)
-# @click.option('--filter', '-f', 'filter_', type=JSONParamType(), default='{}')
-# @click.pass_obj
-# @handle_errors
-# def documents(config, collection, filter_):
-#     for document in get_session_client(config).use_project(
-#         config['sessions'][config['active_session']]['active_project_id']
-#     ).documents.find(collection=collection, filter=filter_):
-#         echo_json(document)
+@cli.group()
+@click.pass_context
+def document(ctx):
+    """Document manipulation commands"""
+    pass
+
+
+@document.command()
+@click.pass_context
+@handle_errors
+def create(ctx):
+    """Creates a document"""
+    pass
+
+
+@document.command()
+@click.pass_context
+@click.argument('document_id', required=True)
+@options.collection()
+@options.property()
+@options.pretty()
+@handle_errors
+def get(ctx, document_id, collection_id, property_, pretty):
+    """Returns a document"""
+    echo_json(
+        get_session_project_client().document.get(
+            identity=document_id,
+            collection=collection_id,
+            property=property_
+        ),
+        pretty=pretty
+    )
+
+
+@document.command('get-file')
+@click.pass_context
+@handle_errors
+def get_file(ctx):
+    """Returns a file content"""
+    pass
+
+
+@document.command()
+@click.pass_context
+@handle_errors
+def remove(ctx):
+    """Removes a document"""
+    pass
+
+
+@document.command()
+@click.pass_context
+@handle_errors
+def save(ctx):
+    """Saves a document"""
+    pass
+
+
+@document.command()
+@click.pass_context
+@handle_errors
+def update(ctx):
+    """Updates a document"""
+    pass
+
+
+@cli.group()
+@click.pass_context
+def documents(ctx):
+    """Documents manipulation commands"""
+    pass
+
+
+@documents.command()
+@options.filter()
+@options.text()
+@click.pass_context
+@handle_errors
+def count(ctx, filter_, text_):
+    """Number of documents"""
+    pass
+    # click.echo(
+    #     get_session_project_client().collections.count(
+    #         filter=filter_,
+    #         text=text_
+    #     )
+    # )
+
+@documents.command()
+@options.filter()
+@options.text()
+@click.pass_context
+@handle_errors
+def find(ctx, filter_, text_):
+    """Find documents"""
+    pass
+
+
+@documents.command()
+@options.filter()
+@options.text()
+@click.pass_context
+@handle_errors
+def update(ctx, filter_, text_):
+    """Update documents"""
+    pass
+
+
+@documents.command()
+@options.filter()
+@options.text()
+@click.pass_context
+@handle_errors
+def upsert(ctx, filter_, text_):
+    """Update or insert document"""
+    pass
+
+
+@documents.command()
+@options.filter()
+@options.text()
+@click.pass_context
+@handle_errors
+def remove(ctx, filter_, text_):
+    """Removes documents"""
+    pass
 
 
 if __name__ == '__main__':

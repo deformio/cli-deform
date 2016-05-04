@@ -83,6 +83,14 @@ class Options(object):
             default='',
             help='Work with specified property'
         )
+        self.collection = partial(
+            click.option,
+            '--collection',
+            '-c',
+            'collection_id',
+            required=True,
+            help='Collection'
+        )
         self.pretty = partial(click.option, '--pretty', is_flag=True)
 
 

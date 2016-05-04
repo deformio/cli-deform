@@ -1,3 +1,5 @@
+import json
+
 from behave import when, then
 from hamcrest import assert_that, has_entry, has_entries, is_not
 from cli_bdd.behave.steps import *
@@ -347,6 +349,29 @@ def step_impl(context, collection_id):
     except NotFoundError:
         pass
 
+
+@given(
+    'there is an empty "(?P<collection_id>\w+)" '
+    'collection in current user\'s project'
+)
+def step_impl(context, collection_id):
+    context.execute_steps(
+        u'''
+            Given there is no "%s" collection in current user\'s project
+        ''' % collection_id
+    )
+    deform_session_project_client.collection.create(
+        data={
+            '_id': collection_id,
+            'name': 'Collection %s' % collection_id,
+            'schema': {
+                'description': 'schema of collection %s' % collection_id,
+                'additionalProperties': True
+            }
+        }
+    )
+
+
 @then("the output should contain number of collections in user's project")
 def step_impl(context):
     context.execute_steps(
@@ -376,3 +401,12 @@ def step_impl(context, pretty):
                     """
             ''' % expected
         )
+
+@given(
+    'there is a document in collection "(?P<collection_id>\w+)"'
+)
+def step_impl(context, collection_id):
+    deform_session_project_client.document.save(
+        data=json.loads(context.text),
+        collection=collection_id
+    )
