@@ -13,6 +13,7 @@ Feature: deform without parameters
 
             Commands:
               collection   Collection manipulation commands
+              collections  Collections manipulation commands
               login        Authenticates against the API
               project      Project manipulation commands
               projects     User's projects

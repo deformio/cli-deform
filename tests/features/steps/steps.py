@@ -346,3 +346,15 @@ def step_impl(context, collection_id):
         )
     except NotFoundError:
         pass
+
+@then("the output should contain number of collections in user's project")
+def step_impl(context):
+    context.execute_steps(
+        u'''
+            Then the output should contain exactly:
+                """
+                %s
+
+                """
+        ''' % deform_session_project_client.collections.count()
+    )
