@@ -276,11 +276,19 @@ def update(ctx, collection_id, data, property_):
 
 @collection.command()
 @click.argument('collection_id')
+@options.property()
 @click.pass_context
 @handle_errors
-def remove(ctx, collection_id):
+def remove(ctx, collection_id, property_):
     """Removes a collection"""
-    pass
+    get_session_project_client().collection.remove(
+        identity=collection_id,
+        property=property_
+    )
+    if property_:
+        click.echo('Property removed')
+    else:
+        click.echo('Collection removed')
 
 
 
