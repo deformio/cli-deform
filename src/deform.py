@@ -306,11 +306,11 @@ def collections(ctx):
 @handle_errors
 def find(ctx, filter_, text_, pretty):
     """Find collections"""
-    # for project in get_session_client().projects.find(
-    #     filter=filter_,
-    #     text=text_
-    # ):
-    #     echo_json(project, pretty=pretty)
+    for collection in get_session_project_client().collections.find(
+        filter=filter_,
+        text=text_
+    ):
+        echo_json(collection, pretty=pretty)
 
 
 @collections.command()

@@ -358,3 +358,21 @@ def step_impl(context):
                 """
         ''' % deform_session_project_client.collections.count()
     )
+
+@then(
+    "the output should contain collections in user's "
+    "project\s?(?P<pretty>with pretty print)?"
+)
+def step_impl(context, pretty):
+    for collection in deform_session_project_client.collections.find():
+        expected = '"_id": "%s"' % collection['_id']
+        if pretty:
+            expected = '    ' + expected
+        context.execute_steps(
+            u'''
+                Then the output should contain:
+                    """
+                    %s
+                    """
+            ''' % expected
+        )
