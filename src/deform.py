@@ -257,11 +257,21 @@ def save(ctx, collection_id, data, property_):
 
 @collection.command()
 @click.argument('collection_id')
+@options.data()
+@options.property()
 @click.pass_context
 @handle_errors
-def update(ctx, collection_id):
+def update(ctx, collection_id, data, property_):
     """Updates a collection"""
-    pass
+    response = get_session_project_client().collection.update(
+        identity=collection_id,
+        data=data,
+        property=property_
+    )
+    if property_:
+        click.echo('Property updated')
+    else:
+        click.echo('Collection updated')
 
 
 @collection.command()
