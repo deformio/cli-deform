@@ -52,13 +52,17 @@ You can run tests with config from file like this:
 
 All config values must be specified with JSON types.
 
-Running tests just for one environment:
+Running BDD tests:
 
-    $ eval $(cat .test_config) tox -e py27
+    $ eval $(cat .test_config) tox -e py27-bdd
 
-Running tests for specific feature:
+Running BDD tests for specific feature:
 
-    $ eval $(cat .test_config) tox -e py27 -- -i projects/find.feature
+    $ eval $(cat .test_config) tox -e py27-bdd -- -i projects/find.feature
+
+Running unit tests:
+
+    $ eval $(cat .test_config) tox -e py27-unit
 
 ### Codestyle
 

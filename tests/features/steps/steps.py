@@ -1,4 +1,5 @@
 import json
+import hashlib
 
 from behave import when, then
 from hamcrest import assert_that, has_entry, has_entries, is_not
@@ -352,22 +353,26 @@ def step_impl(context, collection_id):
 
 @given(
     'there is an empty "(?P<collection_id>\w+)" '
-    'collection in current user\'s project'
+    'collection in current user\'s project\s?(?P<schema>with schema)?'
 )
-def step_impl(context, collection_id):
+def step_impl(context, collection_id, schema):
     context.execute_steps(
         u'''
             Given there is no "%s" collection in current user\'s project
         ''' % collection_id
     )
+    if schema:
+        schema = context.text
+    else:
+        schema = {
+            'description': 'schema of collection %s' % collection_id,
+            'additionalProperties': True
+        }
     deform_session_project_client.collection.create(
         data={
             '_id': collection_id,
             'name': 'Collection %s' % collection_id,
-            'schema': {
-                'description': 'schema of collection %s' % collection_id,
-                'additionalProperties': True
-            }
+            'schema': schema
         }
     )
 
@@ -409,4 +414,20 @@ def step_impl(context, collection_id):
     deform_session_project_client.document.save(
         data=json.loads(context.text),
         collection=collection_id
+    )
+
+
+@then(
+    'the output should contain md5 of '
+    '"(?P<file_path>[^"]*)"(?P<binary>\sbinary)? file'
+)
+def step_impl(context, file_path, binary):
+    mode = 'r' if not binary else 'rb'
+    context.execute_steps(
+        u'''
+            Then the output should contain:
+                """
+                    "md5": "%s"
+                """
+        ''' % hashlib.md5(open(file_path, mode).read()).hexdigest()
     )

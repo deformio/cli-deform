@@ -337,10 +337,19 @@ def document(ctx):
 
 @document.command()
 @click.pass_context
+@options.data()
+@options.collection()
+@options.pretty()
 @handle_errors
-def create(ctx):
+def create(ctx, data, collection_id, pretty):
     """Creates a document"""
-    pass
+    echo_json(
+        get_session_project_client().document.create(
+            data=data,
+            collection=collection_id,
+        ),
+        pretty=pretty
+    )
 
 
 @document.command()

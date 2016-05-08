@@ -17,6 +17,13 @@ def before_all(context):
         pass
     os.chdir(home)
 
+    # copy files
+    shutil.rmtree(os.path.join(home, 'files'), ignore_errors=True)
+    shutil.copytree(
+        os.path.join(CONFIG['BASE_PATH'], 'files'),
+        os.path.join(home, 'files')
+    )
+
     # run mock server
     context.mock_server = Thread(
         target=mock_server_app.run,

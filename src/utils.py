@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import json
+import uuid
 from functools import partial
 
 import click
@@ -14,7 +15,7 @@ from pygments.formatters import TerminalFormatter, Terminal256Formatter
 from functools import wraps
 
 
-CONFIG_DIR = os.path.join(os.path.expanduser("~"), '.deform/')
+CONFIG_DIR = click.get_app_dir('deform')
 CONFIG_PATH = os.path.join(CONFIG_DIR, 'config.json')
 
 
@@ -28,7 +29,7 @@ class JSONParamType(click.types.StringParamType):
             ctx=ctx,
         )
         try:
-            return json.loads(value)
+            return parse_json_with_files(value)
         except ValueError:
             self.fail(value, param, ctx)
 
@@ -145,7 +146,13 @@ def handle_errors(f):
         except DeformException as e:
             error = str(e)
             if e.errors:
-                error = '%s: %s' % (error, json.dumps(e.errors))
+                error = '%s:\n%s' % (
+                    error,
+                    '\n'.join([
+                        '* "%s" - %s' % (i['property'], i['message'])
+                        for i in e.errors
+                    ])
+                )
             click.echo(error, err=True)
             ctx.exit(1)
         except AuthRequired as e:
@@ -265,6 +272,32 @@ def get_json(data, pretty=False, color=False):
             Terminal256Formatter(style=Solarized256Style),
         )
     return json_data
+
+
+def parse_json_with_files(value):
+    boundary = str(uuid.uuid4())
+    value = value.replace('@"/', '"%s/' % boundary)
+    return open_files_in_data(boundary, json.loads(value))
+
+
+def open_files_in_data(boundary, data):
+    if isinstance(data, list):
+        response = []
+        for item in data:
+            response.append(open_files_in_data(boundary, item))
+        return response
+    elif isinstance(data, dict):
+        response = {}
+        for key, value in data.items():
+            response[key] = open_files_in_data(boundary, value)
+        return response
+    elif isinstance(data, basestring):
+        if data.startswith(boundary):
+            return open(data.lstrip(boundary))
+        else:
+            return data
+    else:
+        return data
 
 
 class Solarized256Style(pygments.style.Style):
