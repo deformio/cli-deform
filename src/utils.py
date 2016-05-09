@@ -92,6 +92,32 @@ class Options(object):
             required=True,
             help='Collection'
         )
+        self.sort = partial(
+            click.option,
+            '--sort',
+            '-s',
+            'sort',
+            required=False,
+            help='Sort by field'
+        )
+        self.fields = partial(
+            click.option,
+            '--fields',
+            '-i',
+            'fields',
+            required=False,
+            help='Return specified fields only',
+            multiple=True
+        )
+        self.fields_exclude = partial(
+            click.option,
+            '--fields-exclude',
+            '-e',
+            'fields_exclude',
+            required=False,
+            help='Return all but the excluded fields',
+            multiple=True
+        )
         self.pretty = partial(click.option, '--pretty', is_flag=True)
 
 

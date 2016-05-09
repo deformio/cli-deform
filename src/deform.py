@@ -467,13 +467,33 @@ def count(ctx, filter_, text_):
     # )
 
 @documents.command()
+@options.collection()
 @options.filter()
+@options.sort()
 @options.text()
+@options.fields()
+@options.fields_exclude()
+@options.pretty()
 @click.pass_context
 @handle_errors
-def find(ctx, filter_, text_):
+def find(ctx,
+         collection_id,
+         filter_,
+         text_,
+         fields,
+         fields_exclude,
+         pretty,
+         sort):
     """Find documents"""
-    pass
+    for document in get_session_project_client().documents.find(
+        collection=collection_id,
+        filter=filter_,
+        text=text_,
+        fields=fields,
+        fields_exclude=fields_exclude,
+        sort=sort
+    ):
+        echo_json(document, pretty=pretty)
 
 
 @documents.command()
@@ -503,6 +523,7 @@ def upsert(ctx, filter_, text_):
 @handle_errors
 def remove(ctx, filter_, text_):
     """Removes documents"""
+    # todo: remove all with confirmation
     pass
 
 
