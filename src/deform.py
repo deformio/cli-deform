@@ -389,11 +389,17 @@ def get_file(ctx, document_id, collection_id, property_):
 
 
 @document.command()
+@click.argument('document_id')
+@options.collection()
 @click.pass_context
 @handle_errors
-def remove(ctx):
+def remove(ctx, document_id, collection_id):
     """Removes a document"""
-    pass
+    get_session_project_client().document.remove(
+        identity=document_id,
+        collection=collection_id
+    )
+    click.echo('Document removed')
 
 
 @document.command()
