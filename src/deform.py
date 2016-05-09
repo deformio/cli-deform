@@ -452,19 +452,21 @@ def documents(ctx):
 
 
 @documents.command()
+@options.collection()
 @options.filter()
 @options.text()
 @click.pass_context
 @handle_errors
-def count(ctx, filter_, text_):
+def count(ctx, collection_id, filter_, text_):
     """Number of documents"""
-    pass
-    # click.echo(
-    #     get_session_project_client().collections.count(
-    #         filter=filter_,
-    #         text=text_
-    #     )
-    # )
+    click.echo(
+        get_session_project_client().documents.count(
+            collection=collection_id,
+            filter=filter_,
+            text=text_
+        )
+    )
+
 
 @documents.command()
 @options.collection()
