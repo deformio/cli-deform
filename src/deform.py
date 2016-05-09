@@ -506,8 +506,8 @@ def find(ctx,
 @handle_errors
 def update(ctx, collection_id, filter_, operation):
     """Update documents"""
-    echo_json(
-        get_session_project_client().documents.update(
+    click.echo(
+        'Updated documents: %s' % get_session_project_client().documents.update(
             collection=collection_id,
             operation=operation,
             filter=filter_
@@ -516,24 +516,42 @@ def update(ctx, collection_id, filter_, operation):
 
 
 @documents.command()
+@options.collection()
 @options.filter()
-@options.text()
+@options.operation()
 @click.pass_context
 @handle_errors
-def upsert(ctx, filter_, text_):
+def upsert(ctx, collection_id, filter_, operation):
     """Update or insert document"""
-    pass
+    response = get_session_project_client().documents.upsert(
+        collection=collection_id,
+        filter=filter_,
+        operation=operation
+    )
+    if response.get('upsertedId'):
+        click.echo(
+            'Created document with identity %s' % response.get('upsertedId')
+        )
+    else:
+        click.echo(
+            'Updated documents: %s' % response.get('updated')
+        )
 
 
 @documents.command()
+@options.collection()
 @options.filter()
-@options.text()
 @click.pass_context
+@click.confirmation_option(prompt='Are you sure you want to remove documents?')
 @handle_errors
-def remove(ctx, filter_, text_):
+def remove(ctx, collection_id, filter_):
     """Removes documents"""
-    # todo: remove all with confirmation
-    pass
+    click.echo(
+        'Removed documents: %s' % get_session_project_client().documents.remove(
+            collection=collection_id,
+            filter=filter_
+        )['deleted']
+    )
 
 
 if __name__ == '__main__':

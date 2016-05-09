@@ -1,12 +1,12 @@
 Feature: deform documents update
 
     Scenario: Show command help
-        When I successfully run `deform documents update -h`
+        When I successfully run `deform documents upsert -h`
         Then the output should contain exactly:
             """
-            Usage: deform documents update [OPTIONS]
+            Usage: deform documents upsert [OPTIONS]
 
-              Update documents
+              Update or insert document
 
             Options:
               -c, --collection TEXT  Collection  [required]
@@ -17,49 +17,47 @@ Feature: deform documents update
             """
 
     Scenario: Running command without collection option
-        When I run `deform documents update`
+        When I run `deform documents upsert`
         Then the exit status should be 2
         Then the output should contain exactly:
             """
-            Usage: deform documents update [OPTIONS]
+            Usage: deform documents upsert [OPTIONS]
 
             Error: Missing option "--collection" / "-c".
 
             """
 
     Scenario: Running command without operation option
-        When I run `deform documents update -c hello`
+        When I run `deform documents upsert -c hello`
         Then the exit status should be 2
         Then the output should contain exactly:
             """
-            Usage: deform documents update [OPTIONS]
+            Usage: deform documents upsert [OPTIONS]
 
             Error: Missing option "--operation" / "-o".
 
             """
 
     Scenario: Running command with not logged in user
-        When I run `deform documents update -c hello -o '{}'`
+        When I run `deform documents upsert -c hello -o '{}'`
         Then I should be asked to login first
 
     Scenario: Running command without current project
         Given I am logged in
-        When I run `deform documents update -c hello -o '{}'`
+        When I run `deform documents upsert -c hello -o '{}'`
         Then I should be asked to set current project
 
     Scenario: Running command with not existing collection
         Given I am logged in
         And I use a current user's project
         And there is no "venues" collection in current user's project
-        When I run `deform documents update -c venues -o '{}'`
-        Then the exit status should be 1
-        And the stderr should contain exactly:
+        When I successfully run `deform documents upsert -c venues -o '{"$set": {"name": "Subway"}}'`
+        Then the output should contain:
             """
-            Collection not found.
-
+            Created document with identity
             """
 
-    Scenario: Running command updating all documents
+    Scenario: Running command with not existing by filter documents
         Given I am logged in
         And I use a current user's project
         And there is an empty "venues" collection in current user's project
@@ -77,21 +75,19 @@ Feature: deform documents update
                 "name": "McDonalds"
             }
             """
-        When I successfully run `deform documents update -c venues -o '{"$set": {"rating": 10}}'`
-        Then the output should contain exactly:
+        When I successfully run `deform documents upsert -c venues -o '{"$set": {"rating": 10}}' -f '{"name": "Pizza Hut"}'`
+        Then the output should contain:
             """
-            Updated documents: 2
-
+            Created document with identity
             """
-        When I successfully run `deform documents find -c venues`
-        Then the output should contain exactly:
+        When I successfully run `deform documents find -c venues -f '{"rating": 10}'`
+        Then the output should contain 1 line
+        And the output should contain:
             """
-            {"_id": "mcdonalds","name": "McDonalds","rating": 10}
-            {"_id": "subway","name": "Subway","rating": 10}
-
+            "name": "Pizza Hut"
             """
 
-    Scenario: Running command updating documents by filter
+    Scenario: Running command with existing by filter documents
         Given I am logged in
         And I use a current user's project
         And there is an empty "venues" collection in current user's project
@@ -109,16 +105,23 @@ Feature: deform documents update
                 "name": "McDonalds"
             }
             """
-        When I successfully run `deform documents update -c venues -o '{"$set": {"rating": 10}}' -f '{"name": "Subway"}'`
+        When I successfully run `deform documents upsert -c venues -o '{"$set": {"rating": 10}}' -f '{"name": "McDonalds"}'`
         Then the output should contain exactly:
             """
             Updated documents: 1
 
             """
-        When I successfully run `deform documents find -c venues`
+        When I successfully run `deform documents find -c venues --pretty`
         Then the output should contain exactly:
             """
-            {"_id": "mcdonalds","name": "McDonalds"}
-            {"_id": "subway","name": "Subway","rating": 10}
+            {
+                "_id": "mcdonalds",
+                "name": "McDonalds",
+                "rating": 10
+            }
+            {
+                "_id": "subway",
+                "name": "Subway"
+            }
 
             """
