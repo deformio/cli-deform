@@ -499,13 +499,20 @@ def find(ctx,
 
 
 @documents.command()
+@options.collection()
 @options.filter()
-@options.text()
+@options.operation()
 @click.pass_context
 @handle_errors
-def update(ctx, filter_, text_):
+def update(ctx, collection_id, filter_, operation):
     """Update documents"""
-    pass
+    echo_json(
+        get_session_project_client().documents.update(
+            collection=collection_id,
+            operation=operation,
+            filter=filter_
+        )['updated']
+    )
 
 
 @documents.command()

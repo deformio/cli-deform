@@ -118,6 +118,15 @@ class Options(object):
             help='Return all but the excluded fields',
             multiple=True
         )
+        self.operation = partial(
+            click.option,
+            '--operation',
+            '-o',
+            'operation',
+            type=JSONParamType(),
+            required=True,
+            help='Operation'
+        )
         self.pretty = partial(click.option, '--pretty', is_flag=True)
 
 
