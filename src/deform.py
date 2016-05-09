@@ -424,11 +424,24 @@ def save(ctx, document_id, collection_id, data, property_, pretty):
 
 
 @document.command()
+@click.argument('document_id')
+@options.collection()
+@options.data(required=True, default=None)
+@options.property()
+@options.pretty()
 @click.pass_context
 @handle_errors
-def update(ctx):
+def update(ctx, document_id, collection_id, data, property_, pretty):
     """Updates a document"""
-    pass
+    echo_json(
+        get_session_project_client().document.update(
+            data=data,
+            collection=collection_id,
+            identity=document_id,
+            property=property_
+        ),
+        pretty=pretty
+    )
 
 
 @cli.group()
