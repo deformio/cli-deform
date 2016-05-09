@@ -372,11 +372,20 @@ def get(ctx, document_id, collection_id, property_, pretty):
 
 
 @document.command('get-file')
+@click.argument('document_id')
+@options.collection()
+@options.property()
 @click.pass_context
 @handle_errors
-def get_file(ctx):
+def get_file(ctx, document_id, collection_id, property_):
     """Returns a file content"""
-    pass
+    with click.open_file('-', 'w') as stdout:
+        for file_part in get_session_project_client().document.get_file(
+            identity=document_id,
+            collection=collection_id,
+            property=property_
+        ):
+            stdout.write(file_part)
 
 
 @document.command()
@@ -388,11 +397,24 @@ def remove(ctx):
 
 
 @document.command()
+@click.argument('document_id', required=False)
+@options.collection()
+@options.data()
+@options.property()
+@options.pretty()
 @click.pass_context
 @handle_errors
-def save(ctx):
+def save(ctx, document_id, collection_id, data, property_, pretty):
     """Saves a document"""
-    pass
+    echo_json(
+        get_session_project_client().document.save(
+            data=data,
+            collection=collection_id,
+            identity=document_id,
+            property=property_
+        ),
+        pretty=pretty
+    )
 
 
 @document.command()

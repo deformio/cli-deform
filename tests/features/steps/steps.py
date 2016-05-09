@@ -417,6 +417,15 @@ def step_impl(context, collection_id):
     )
 
 
+@given(
+    'there is no documents in collection "(?P<collection_id>\w+)"'
+)
+def step_impl(context, collection_id):
+    deform_session_project_client.documents.remove(
+        collection=collection_id
+    )
+
+
 @then(
     'the output should contain md5 of '
     '"(?P<file_path>[^"]*)"(?P<binary>\sbinary)? file'
