@@ -61,7 +61,7 @@ setup(
     author_email='web-chib@ya.ru',
     install_requires=[
         'click>=6.3',
-        'python-deform>=0.0.5',
+        'python-deform>=0.0.6',
         'pygments>=2.1.3',
         'colorama>=0.3.7',
     ],

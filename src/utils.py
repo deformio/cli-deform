@@ -179,16 +179,7 @@ def handle_errors(f):
         try:
             return f(ctx, *args, **kwargs)
         except DeformException as e:
-            error = str(e)
-            if e.errors:
-                error = '%s:\n%s' % (
-                    error,
-                    '\n'.join([
-                        '* "%s" - %s' % (i['property'], i['message'])
-                        for i in e.errors
-                    ])
-                )
-            click.echo(error, err=True)
+            click.echo(str(e), err=True)
             ctx.exit(1)
         except AuthRequired as e:
             click.echo(

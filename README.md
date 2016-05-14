@@ -6,20 +6,7 @@ Installation:
 
 Usage:
 
-    $ deform  # shows help
-    $ deform login --email <email> --password <password>
-    $ deform whoami
-    $ deform projects
-    $ deform project
-    $ deform project info mysquare
-    $ deform project use mysquare
-    $ deform collections
-    $ deform documents -c venues
-    $ deform document -i subway -c venues
-    $ deform document remove -i subway -c venues
-    $ deform document edit -i subway -c venues  # opens document in http://click.pocoo.org/5/api/#click.edit. On save saves to server
-    $ deform documents -c venues -f '{"name":"subway"}'
-    $ deform documents -c venues -t 'subway'
+    $ deform --help
 
 ## Tests
 
