@@ -22,6 +22,7 @@ Feature: deform without parameters
               project          Project manipulation commands
               projects         User's projects
               settings         CLI settings
+              signup           Creates an account
               use-project      Sets a current project
               version          Outputs the client version
               whoami           Outputs the current user

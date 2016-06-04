@@ -56,6 +56,12 @@ def user():
         return json_response({
             'sessionId': '1234'
         })
+    elif action is None:
+        data = request.get_json()['payload']
+        if data['email'] == 'mock@email.com':
+            return json_response({
+                'message': 'Check your email for confirmation code'
+            })
 
 
 @app.route('/api/user/projects/', methods=['POST', 'PUT'])

@@ -339,6 +339,14 @@ def step_impl(context, pretty):
     context.execute_steps(command )
 
 
+@when("I try to signup with current user's email")
+def step_impl(context):
+    command = u'When I run `deform signup -e %s -p whatever`' % (
+        CONFIG['DEFORM']['EMAIL'],
+    )
+    context.execute_steps(command)
+
+
 @then("the output should contain user's project info\s?(?P<pretty>with pretty print)?")
 def step_impl(context, pretty):
     expected = '"_id": "%s"' % CONFIG['DEFORM']['PROJECT']

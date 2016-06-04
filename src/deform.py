@@ -109,6 +109,31 @@ def logout(ctx):
 
 
 @cli.command()
+@click.option('--email', '-e', prompt=True)
+@click.option('--password', '-p', prompt=True, hide_input=True)
+@click.pass_context
+@handle_errors
+def signup(ctx, email, password):
+    """Creates an account"""
+    response = get_client().user.create(
+        email=email,
+        password=password
+    )
+    msg = 'Account successfully created!'
+    if response.get('message'):
+        msg += ' %s' % response.get('message')
+    click.echo(msg)
+    # save_session(
+    #     email=email,
+    #     session_id=get_client().user.login(
+    #         email=email,
+    #         password=password
+    #     )
+    # )
+    # click.echo('Successfully logged in!')
+
+
+@cli.command()
 @click.pass_context
 @handle_errors
 def whoami(ctx):
