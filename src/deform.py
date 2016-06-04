@@ -19,7 +19,7 @@ from utils import (
     options
 )
 
-__version__ = '0.0.2'
+__version__ = '1.0.0'
 
 VERSION = __version__
 
