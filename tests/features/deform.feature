@@ -17,6 +17,7 @@ Feature: deform without parameters
               document     Document manipulation commands
               documents    Documents manipulation commands
               login        Authenticates against the API
+              logout       Logs out current user
               project      Project manipulation commands
               projects     User's projects
               settings     CLI settings

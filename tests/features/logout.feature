@@ -6,7 +6,7 @@ Feature: deform logout
             """
             Usage: deform logout [OPTIONS]
 
-              Deletes current user authentication credentials
+              Logs out current user
 
             Options:
               -h, --help  Show this message and exit.

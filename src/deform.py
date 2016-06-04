@@ -98,7 +98,7 @@ def login(ctx, email, password):
 @click.pass_context
 @handle_errors
 def logout(ctx):
-    """Deletes current user authentication credentials"""
+    """Logs out current user"""
     session = remove_session()
     if session:
         click.echo('Successfully logged out.')
