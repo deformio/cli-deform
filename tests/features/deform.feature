@@ -12,17 +12,18 @@ Feature: deform without parameters
               -h, --help  Show this message and exit.
 
             Commands:
-              collection   Collection manipulation commands
-              collections  Collections manipulation commands
-              document     Document manipulation commands
-              documents    Documents manipulation commands
-              login        Authenticates against the API
-              logout       Logs out current user
-              project      Project manipulation commands
-              projects     User's projects
-              settings     CLI settings
-              use-project  Sets a current project
-              version      Outputs the client version
-              whoami       Outputs the current user
+              collection       Collection manipulation commands
+              collections      Collections manipulation commands
+              current-project  Outputs a current project
+              document         Document manipulation commands
+              documents        Documents manipulation commands
+              login            Authenticates against the API
+              logout           Logs out current user
+              project          Project manipulation commands
+              projects         User's projects
+              settings         CLI settings
+              use-project      Sets a current project
+              version          Outputs the client version
+              whoami           Outputs the current user
 
             """

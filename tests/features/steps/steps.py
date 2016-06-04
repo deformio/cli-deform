@@ -84,12 +84,25 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(
         u'''
-            Then the output should contain:
+            Then the output should contain exactly:
                 """
                 You are {email}
 
                 """
         '''.format(email=CONFIG['DEFORM']['EMAIL'])
+    )
+
+
+@then("the output should contain info about current user's project")
+def step_impl(context):
+    context.execute_steps(
+        u'''
+            Then the output should contain exactly:
+                """
+                Current project is {project_id}
+
+                """
+        '''.format(project_id=CONFIG['DEFORM']['PROJECT'])
     )
 
 

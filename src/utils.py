@@ -242,6 +242,11 @@ def save_current_project(project_id):
     save_config(config)
 
 
+def get_current_project():
+    config = load_config()
+    return config.get('current_project')
+
+
 def get_session_or_raise():
     config = load_config()
     if 'session' in config:

@@ -12,6 +12,7 @@ from utils import (
     remove_session,
     save_settings,
     save_current_project,
+    get_current_project,
     get_session_or_raise,
     echo_json,
     JSONParamType,
@@ -193,6 +194,25 @@ def count(ctx, filter_, text_):
             text=text_
         )
     )
+
+
+@cli.command('current-project')
+@click.pass_context
+@handle_errors
+def current_project(ctx):
+    """Outputs a current project"""
+    current_project = get_current_project()
+    if current_project:
+        click.echo('Current project is %s' % current_project)
+    else:
+        click.echo(
+            (
+                'You don\'t have a current project. '
+                'Use `deform use-project PROJECT_ID`.'
+            ),
+            err=True
+        )
+        ctx.exit(1)
 
 
 @cli.command('use-project')
