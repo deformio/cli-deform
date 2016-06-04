@@ -14,6 +14,7 @@ Feature: deform without parameters
             Commands:
               collection       Collection manipulation commands
               collections      Collections manipulation commands
+              confirm          Confirms email by code
               current-project  Outputs a current project
               document         Document manipulation commands
               documents        Documents manipulation commands

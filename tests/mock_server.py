@@ -52,12 +52,18 @@ def get_action():
 @app.route('/api/user/', methods=['POST'])
 def user():
     action = get_action()
+    data = request.get_json()['payload']
     if action == 'login':
         return json_response({
             'sessionId': '1234'
         })
+    elif action == 'confirm':
+        if data['code'] == 'mock-confirmation-code':
+            return json_response({
+                'email': 'mock@email.com',
+                'sessionId': '1234'
+            })
     elif action is None:
-        data = request.get_json()['payload']
         if data['email'] == 'mock@email.com':
             return json_response({
                 'message': 'Check your email for confirmation code'

@@ -123,14 +123,25 @@ def signup(ctx, email, password):
     if response.get('message'):
         msg += ' %s' % response.get('message')
     click.echo(msg)
-    # save_session(
-    #     email=email,
-    #     session_id=get_client().user.login(
-    #         email=email,
-    #         password=password
-    #     )
-    # )
-    # click.echo('Successfully logged in!')
+
+
+@cli.command()
+@click.argument('code')
+@click.pass_context
+@handle_errors
+def confirm(ctx, code):
+    """Confirms email by code"""
+    response = get_client().user.confirm(
+        code=code
+    )
+    msg = 'Email successfully confirmed! You are logged in as %s' % (
+        response['email'],
+    )
+    save_session(
+        email=response['email'],
+        session_id=response['sessionId']
+    )
+    click.echo(msg)
 
 
 @cli.command()
