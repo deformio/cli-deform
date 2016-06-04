@@ -267,6 +267,17 @@ def save_session(email, session_id):
     save_config(config)
 
 
+def remove_session():
+    config = load_config()
+    if 'session' in config:
+        old_session = config['session']
+        del config['session']
+        save_config(config)
+    else:
+        old_session = None
+    return old_session
+
+
 def echo_json(data, pretty=False, color=False, nl=True):
     click.echo(
         get_json(

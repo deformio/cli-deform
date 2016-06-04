@@ -9,6 +9,7 @@ from utils import (
     get_session_client,
     get_session_project_client,
     save_session,
+    remove_session,
     save_settings,
     save_current_project,
     get_session_or_raise,
@@ -91,6 +92,19 @@ def login(ctx, email, password):
         )
     )
     click.echo('Successfully logged in!')
+
+
+@cli.command()
+@click.pass_context
+@handle_errors
+def logout(ctx):
+    """Deletes current user authentication credentials"""
+    session = remove_session()
+    if session:
+        click.echo('Successfully logged out.')
+    else:
+        click.echo("You're not logged in.", err=True)
+        ctx.exit(1)
 
 
 @cli.command()
