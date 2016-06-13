@@ -29,9 +29,7 @@ def get_project_info(identity, name):
 
 def json_response(data, status=200):
     return Response(
-        json.dumps({
-            'result': data
-        }),
+        json.dumps(data),
         content_type='application/json',
         status=status
     )
@@ -52,7 +50,7 @@ def get_action():
 @app.route('/api/user/', methods=['POST'])
 def user():
     action = get_action()
-    data = request.get_json()['payload']
+    data = request.get_json()
     if action == 'login':
         return json_response({
             'sessionId': '1234'
@@ -75,7 +73,7 @@ def projects():
     action = get_action()
     method = request.method.lower()
     if action is None:
-        project = request.get_json().get('payload')
+        project = request.get_json()
         if method == 'post':
             if project['_id'] == 'existing-project':
                 return json_response(
