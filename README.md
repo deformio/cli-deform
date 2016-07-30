@@ -79,7 +79,7 @@ For development:
 
 ## Publishing new releases
 
-Increment version in `pydeform/__init__.py`. For example:
+Increment version in `src/deform.py`. For example:
 
     __version__ = '0.0.2'  # from 0.0.1
 
